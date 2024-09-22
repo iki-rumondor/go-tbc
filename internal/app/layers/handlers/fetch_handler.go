@@ -52,3 +52,26 @@ func (h *FetchHandler) GetHealthCenterByUuid(c *gin.Context) {
 
 	c.JSON(http.StatusOK, response.DATA_RES(resp))
 }
+
+func (h *FetchHandler) GetCases(c *gin.Context) {
+
+	resp, err := h.Service.GetCases()
+	if err != nil {
+		utils.HandleError(c, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, response.DATA_RES(resp))
+}
+
+func (h *FetchHandler) GetCaseByUuid(c *gin.Context) {
+
+	uuid := c.Param("uuid")
+	resp, err := h.Service.GetCaseByUuid(uuid)
+	if err != nil {
+		utils.HandleError(c, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, response.DATA_RES(resp))
+}

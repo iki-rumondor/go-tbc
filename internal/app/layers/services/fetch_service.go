@@ -68,3 +68,55 @@ func (s *FetchService) GetHealthCenterByUuid(uuid string) (*response.HealthCente
 
 	return &resp, nil
 }
+
+func (s *FetchService) GetCases() (*[]response.Case, error) {
+	data, err := s.Repo.GetCases()
+	if err != nil {
+		return nil, response.SERVICE_INTERR
+	}
+	var resp []response.Case
+	for _, item := range *data {
+		resp = append(resp, response.Case{
+			Uuid:        item.Uuid,
+			Year:        item.Year,
+			ChildCount:  item.ChildCount,
+			AdultCount:  item.AdultCount,
+			MaleCount:   item.MaleCount,
+			FemaleCount: item.FemaleCount,
+			Total:       item.FemaleCount + item.MaleCount,
+			CreatedAt:   item.CreatedAt,
+			UpdatedAt:   item.UpdatedAt,
+			HealthCenter: &response.HealthCenter{
+				Uuid: item.HealthCenter.Uuid,
+				Name: item.HealthCenter.Name,
+			},
+		})
+	}
+
+	return &resp, nil
+}
+
+func (s *FetchService) GetCaseByUuid(uuid string) (*response.Case, error) {
+	item, err := s.Repo.GetCaseByUuid(uuid)
+	if err != nil {
+		return nil, response.SERVICE_INTERR
+	}
+
+	var resp = response.Case{
+		Uuid:        item.Uuid,
+		Year:        item.Year,
+		ChildCount:  item.ChildCount,
+		AdultCount:  item.AdultCount,
+		MaleCount:   item.MaleCount,
+		FemaleCount: item.FemaleCount,
+		Total:       item.FemaleCount + item.MaleCount,
+		CreatedAt:   item.CreatedAt,
+		UpdatedAt:   item.UpdatedAt,
+		HealthCenter: &response.HealthCenter{
+			Uuid: item.HealthCenter.Uuid,
+			Name: item.HealthCenter.Name,
+		},
+	}
+
+	return &resp, nil
+}

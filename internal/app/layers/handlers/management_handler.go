@@ -59,5 +59,56 @@ func (h *ManagementHandler) UpdateHealthCenter(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusCreated, response.SUCCESS_RES("Puskesmas Berhasil Diperbarui"))
+	c.JSON(http.StatusOK, response.SUCCESS_RES("Puskesmas Berhasil Diperbarui"))
+}
+
+func (h *ManagementHandler) CreateCase(c *gin.Context) {
+	var body request.Case
+	if err := c.BindJSON(&body); err != nil {
+		utils.HandleError(c, response.BADREQ_ERR(err.Error()))
+		return
+	}
+
+	if _, err := govalidator.ValidateStruct(&body); err != nil {
+		utils.HandleError(c, response.BADREQ_ERR(err.Error()))
+		return
+	}
+
+	if err := h.Service.CreateCase(&body); err != nil {
+		utils.HandleError(c, err)
+		return
+	}
+
+	c.JSON(http.StatusCreated, response.SUCCESS_RES("Kasus Berhasil Ditambahkan"))
+}
+
+func (h *ManagementHandler) UpdateCase(c *gin.Context) {
+	var body request.Case
+	if err := c.BindJSON(&body); err != nil {
+		utils.HandleError(c, response.BADREQ_ERR(err.Error()))
+		return
+	}
+
+	if _, err := govalidator.ValidateStruct(&body); err != nil {
+		utils.HandleError(c, response.BADREQ_ERR(err.Error()))
+		return
+	}
+
+	uuid := c.Param("uuid")
+	if err := h.Service.UpdateCase(uuid, &body); err != nil {
+		utils.HandleError(c, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, response.SUCCESS_RES("Kasus Berhasil Diperbarui"))
+}
+
+func (h *ManagementHandler) DeleteCase(c *gin.Context) {
+	uuid := c.Param("uuid")
+	if err := h.Service.DeleteCase(uuid); err != nil {
+		utils.HandleError(c, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, response.SUCCESS_RES("Kasus Berhasil Dihapus"))
 }

@@ -39,3 +39,19 @@ func (r *FetchRepo) GetHealthCenterByUuid(uuid string) (*models.HealthCenter, er
 	}
 	return &data, nil
 }
+
+func (r *FetchRepo) GetCases() (*[]models.Case, error) {
+	var data []models.Case
+	if err := r.db.Preload("HealthCenter").Find(&data).Error; err != nil {
+		return nil, err
+	}
+	return &data, nil
+}
+
+func (r *FetchRepo) GetCaseByUuid(uuid string) (*models.Case, error) {
+	var data models.Case
+	if err := r.db.Preload("HealthCenter").First(&data, "uuid = ?", uuid).Error; err != nil {
+		return nil, err
+	}
+	return &data, nil
+}

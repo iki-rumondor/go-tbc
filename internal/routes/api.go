@@ -31,6 +31,12 @@ func StartServer(handlers *config.Handlers) *gin.Engine {
 		admin.GET("/health-centers/:uuid", handlers.FetchHandler.GetHealthCenterByUuid)
 		admin.POST("/health-centers", handlers.ManagementHandler.CreateHealthCenter)
 		admin.PUT("/health-centers/:uuid", handlers.ManagementHandler.UpdateHealthCenter)
+
+		admin.POST("/cases", handlers.ManagementHandler.CreateCase)
+		admin.PUT("/cases/:uuid", handlers.ManagementHandler.UpdateCase)
+		admin.DELETE("/cases/:uuid", handlers.ManagementHandler.DeleteCase)
+		admin.GET("/cases", handlers.FetchHandler.GetCases)
+		admin.GET("/cases/:uuid", handlers.FetchHandler.GetCaseByUuid)
 	}
 
 	return router

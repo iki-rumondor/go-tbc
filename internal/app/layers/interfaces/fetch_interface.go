@@ -7,4 +7,7 @@ type FetchInterface interface {
 
 	GetHealthCenters() (*[]models.HealthCenter, error)
 	GetHealthCenterByUuid(uuid string) (*models.HealthCenter, error)
+
+	GetCases() (*[]models.Case, error)
+	GetCaseByUuid(uuid string) (*models.Case, error)
 }

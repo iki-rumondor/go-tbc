@@ -16,6 +16,20 @@ func NewManagementInterface(db *gorm.DB) interfaces.ManagementInterface {
 	}
 }
 
+func (r *ManagementRepo) GetHealthCenterByUuid(healthCenterUuid string) (*models.HealthCenter, error) {
+	var data models.HealthCenter
+	if err := r.db.First(&data, "uuid = ?", healthCenterUuid).Error; err != nil {
+		return nil, err
+	}
+
+	return &data, nil
+}
+
+func (r *ManagementRepo) CheckCaseUnique(healthCenterID uint, year, caseUuid string) bool {
+	rows := r.db.First(&models.Case{}, "uuid != ? AND health_center_id = ? AND year = ?", caseUuid, healthCenterID, year).RowsAffected
+	return rows == 0
+}
+
 func (r *ManagementRepo) CreateModel(modelPointer interface{}) error {
 	return r.db.Create(modelPointer).Error
 }
@@ -28,4 +42,23 @@ func (r *ManagementRepo) UpdateHealthCenter(uuid string, model *models.HealthCen
 
 	model.ID = data.ID
 	return r.db.Updates(model).Error
+}
+
+func (r *ManagementRepo) UpdateCase(uuid string, model *models.Case) error {
+	var data models.Case
+	if err := r.db.First(&data, "uuid = ?", uuid).Error; err != nil {
+		return err
+	}
+
+	model.ID = data.ID
+	return r.db.Updates(model).Error
+}
+
+func (r *ManagementRepo) DeleteCase(uuid string) error {
+	var data models.Case
+	if err := r.db.First(&data, "uuid = ?", uuid).Error; err != nil {
+		return err
+	}
+
+	return r.db.Delete(&data).Error
 }
