@@ -19,6 +19,17 @@ func NewFetchHandler(service *services.FetchService) *FetchHandler {
 	}
 }
 
+func (h *FetchHandler) GetUserByUuid(c *gin.Context) {
+	uuid := c.GetString("uuid")
+	resp, err := h.Service.GetUserByUuid(uuid)
+	if err != nil {
+		utils.HandleError(c, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, response.DATA_RES(resp))
+}
+
 func (h *FetchHandler) GetHealthCenters(c *gin.Context) {
 
 	resp, err := h.Service.GetHealthCenters()

@@ -24,9 +24,13 @@ func StartServer(handlers *config.Handlers) *gin.Engine {
 		public.POST("/verify-user", handlers.AuthHandler.VerifyUser)
 	}
 
-	admin := router.Group("api").Use(IsValidJWT()).Use(IsRole("ADMIN"))
+	admin := router.Group("api").Use(IsValidJWT()).Use(IsRole("ADMIN")).Use(SetUserUuid())
 	{
+		admin.GET("/users/detail", handlers.FetchHandler.GetUserByUuid)
+		admin.GET("/health-centers", handlers.FetchHandler.GetHealthCenters)
+		admin.GET("/health-centers/:uuid", handlers.FetchHandler.GetHealthCenterByUuid)
 		admin.POST("/health-centers", handlers.ManagementHandler.CreateHealthCenter)
+		admin.PUT("/health-centers/:uuid", handlers.ManagementHandler.UpdateHealthCenter)
 	}
 
 	return router

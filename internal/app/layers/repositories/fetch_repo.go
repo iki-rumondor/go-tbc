@@ -16,6 +16,14 @@ func NewFetchInterface(db *gorm.DB) interfaces.FetchInterface {
 	}
 }
 
+func (r *FetchRepo) GetUserByUuid(uuid string) (*models.User, error) {
+	var data models.User
+	if err := r.db.Preload("Role").First(&data, "uuid = ?", uuid).Error; err != nil {
+		return nil, err
+	}
+	return &data, nil
+}
+
 func (r *FetchRepo) GetHealthCenters() (*[]models.HealthCenter, error) {
 	var data []models.HealthCenter
 	if err := r.db.Find(&data).Error; err != nil {

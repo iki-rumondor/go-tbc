@@ -19,10 +19,26 @@ func NewManagementService(repo interfaces.ManagementInterface) *ManagementServic
 
 func (s *ManagementService) CreateHealthCenter(req *request.HealthCenter) error {
 	model := models.HealthCenter{
-		Name: req.Name,
+		Name:      req.Name,
+		Longitude: req.Longitude,
+		Latitude:  req.Latitude,
 	}
 
 	if err := s.Repo.CreateModel(&model); err != nil {
+		return response.SERVICE_INTERR
+	}
+
+	return nil
+}
+
+func (s *ManagementService) UpdateHealthCenter(uuid string, req *request.HealthCenter) error {
+	model := models.HealthCenter{
+		Name:      req.Name,
+		Longitude: req.Longitude,
+		Latitude:  req.Latitude,
+	}
+
+	if err := s.Repo.UpdateHealthCenter(uuid, &model); err != nil {
 		return response.SERVICE_INTERR
 	}
 
