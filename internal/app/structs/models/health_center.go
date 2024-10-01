@@ -14,6 +14,7 @@ type HealthCenter struct {
 	ImageName string  `gorm:"not_null;"`
 	CreatedAt int64   `gorm:"autoCreateTime:milli"`
 	UpdatedAt int64   `gorm:"autoCreateTime:milli;autoUpdateTime:milli"`
+	Cases     *[]Case
 }
 
 func (m *HealthCenter) BeforeCreate(tx *gorm.DB) error {

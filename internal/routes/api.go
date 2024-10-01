@@ -24,6 +24,9 @@ func StartServer(handlers *config.Handlers) *gin.Engine {
 		public.POST("/verify-user", handlers.AuthHandler.VerifyUser)
 		public.GET("/health-centers", handlers.FetchHandler.GetHealthCenters)
 		public.GET("/files/health-centers/:filename", handlers.FetchHandler.GetHealthCenterImage)
+		public.GET("/years/cases", handlers.FetchHandler.GetCaseYears)
+		public.GET("/results/categories/:category/years/:year", handlers.FetchHandler.GetResultByType)
+		public.GET("/results/:uuid", handlers.FetchHandler.GetResultByUuid)
 	}
 
 	admin := router.Group("api").Use(IsValidJWT()).Use(IsRole("ADMIN")).Use(SetUserUuid())
@@ -39,7 +42,6 @@ func StartServer(handlers *config.Handlers) *gin.Engine {
 		admin.GET("/cases", handlers.FetchHandler.GetCases)
 		admin.GET("/cases/:uuid", handlers.FetchHandler.GetCaseByUuid)
 
-		admin.GET("/years/cases", handlers.FetchHandler.GetCaseYears)
 		admin.POST("/clustering", handlers.ProcessingHandler.KmeansClustering)
 		admin.GET("/results/years/:year", handlers.FetchHandler.GetResultByYear)
 	}

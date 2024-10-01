@@ -71,3 +71,19 @@ func (r *FetchRepo) GetResultByYear(year string) (*[]models.Result, error) {
 	}
 	return &data, nil
 }
+
+func (r *FetchRepo) GetResultByType(year, types string) (*[]models.Result, error) {
+	var data []models.Result
+	if err := r.db.Preload("Case.HealthCenter").Joins("Case").Find(&data, "Case.year = ? AND type = ?", year, types).Error; err != nil {
+		return nil, err
+	}
+	return &data, nil
+}
+
+func (r *FetchRepo) GetResultByUuid(uuid string) (*models.Result, error) {
+	var resp models.Result
+	if err := r.db.Preload("Case.HealthCenter.Cases").First(&resp, "uuid = ?", uuid).Error; err != nil {
+		return nil, err
+	}
+	return &resp, nil
+}
