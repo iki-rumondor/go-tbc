@@ -228,3 +228,34 @@ func (s *FetchService) GetResultByUuid(uuid string) (*response.Result, error) {
 
 	return &resp, nil
 }
+
+func (s *FetchService) GetDashboardInformation() (*response.DashboardInformation, error) {
+	years, err := s.Repo.GetYearCases()
+	if err != nil {
+		return nil, response.SERVICE_INTERR
+	}
+
+	var totalCases []int64
+
+	for _, item := range *years {
+		results, err := s.Repo.GetCasesByYear(item)
+		if err != nil {
+			return nil, response.SERVICE_INTERR
+		}
+
+		var total int64
+
+		for _, result := range *results {
+			total += result.AdultCount + result.ChildCount
+		}
+
+		totalCases = append(totalCases, total)
+	}
+
+	var resp = response.DashboardInformation{
+		YearCases:  *years,
+		TotalCases: totalCases,
+	}
+
+	return &resp, nil
+}

@@ -31,6 +31,8 @@ func StartServer(handlers *config.Handlers) *gin.Engine {
 
 	admin := router.Group("api").Use(IsValidJWT()).Use(IsRole("ADMIN")).Use(SetUserUuid())
 	{
+		admin.GET("/dashboards/admin", handlers.FetchHandler.GetDashboardInformation)
+
 		admin.GET("/users/detail", handlers.FetchHandler.GetUserByUuid)
 		admin.GET("/health-centers/:uuid", handlers.FetchHandler.GetHealthCenterByUuid)
 		admin.POST("/health-centers", handlers.ManagementHandler.CreateHealthCenter)

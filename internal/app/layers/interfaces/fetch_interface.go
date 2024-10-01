@@ -15,4 +15,7 @@ type FetchInterface interface {
 	GetResultByYear(year string) (*[]models.Result, error)
 	GetResultByType(year, types string) (*[]models.Result, error)
 	GetResultByUuid(uuid string) (*models.Result, error)
+
+	GetYearCases() (*[]string, error)
+	GetCasesByYear(year string) (*[]models.Case, error)
 }

@@ -87,3 +87,25 @@ func (r *FetchRepo) GetResultByUuid(uuid string) (*models.Result, error) {
 	}
 	return &resp, nil
 }
+
+func (r *FetchRepo) GetYearCases() (*[]string, error) {
+	var years []string
+
+	// Mengambil tahun distinct dan mengurutkannya dari tahun terlama
+	if err := r.db.Model(&models.Case{}).
+		Distinct("year").
+		Order("year ASC").
+		Pluck("year", &years).Error; err != nil {
+		return nil, err
+	}
+
+	return &years, nil
+}
+
+func (r *FetchRepo) GetCasesByYear(year string) (*[]models.Case, error) {
+	var data []models.Case
+	if err := r.db.Find(&data, "year = ?", year).Error; err != nil {
+		return nil, err
+	}
+	return &data, nil
+}

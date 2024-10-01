@@ -120,6 +120,16 @@ func (h *FetchHandler) GetResultByUuid(c *gin.Context) {
 	c.JSON(http.StatusOK, response.DATA_RES(resp))
 }
 
+func (h *FetchHandler) GetDashboardInformation(c *gin.Context) {
+	resp, err := h.Service.GetDashboardInformation()
+	if err != nil {
+		utils.HandleError(c, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, response.DATA_RES(resp))
+}
+
 func (h *FetchHandler) GetHealthCenterImage(c *gin.Context) {
 	filename := c.Param("filename")
 	folder := "internal/files/puskesmas"

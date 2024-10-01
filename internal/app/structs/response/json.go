@@ -40,3 +40,8 @@ type Result struct {
 	UpdatedAt int64  `json:"updated_at"`
 	Case      *Case  `json:"case"`
 }
+
+type DashboardInformation struct {
+	YearCases  []string `json:"year_cases" `
+	TotalCases []int64  `json:"total_cases" `
+}
