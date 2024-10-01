@@ -12,5 +12,6 @@ func GetAllModels() []Model {
 		{Model: models.User{}},
 		{Model: models.HealthCenter{}},
 		{Model: models.Case{}},
+		{Model: models.Result{}},
 	}
 }

@@ -11,6 +11,7 @@ type HealthCenter struct {
 	Name      string  `gorm:"not_null;size:128"`
 	Longitude float64 `gorm:"not_null;"`
 	Latitude  float64 `gorm:"not_null;"`
+	ImageName string  `gorm:"not_null;"`
 	CreatedAt int64   `gorm:"autoCreateTime:milli"`
 	UpdatedAt int64   `gorm:"autoCreateTime:milli;autoUpdateTime:milli"`
 }

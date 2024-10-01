@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"net/http"
+	"path/filepath"
 
 	"github.com/gin-gonic/gin"
 	"github.com/iki-rumondor/go-tbc/internal/app/layers/services"
@@ -74,4 +75,32 @@ func (h *FetchHandler) GetCaseByUuid(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, response.DATA_RES(resp))
+}
+
+func (h *FetchHandler) GetCaseYears(c *gin.Context) {
+	resp, err := h.Service.GetCaseYears()
+	if err != nil {
+		utils.HandleError(c, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, response.DATA_RES(resp))
+}
+
+func (h *FetchHandler) GetResultByYear(c *gin.Context) {
+	year := c.Param("year")
+	resp, err := h.Service.GetResultByYear(year)
+	if err != nil {
+		utils.HandleError(c, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, response.DATA_RES(resp))
+}
+
+func (h *FetchHandler) GetHealthCenterImage(c *gin.Context) {
+	filename := c.Param("filename")
+	folder := "internal/files/puskesmas"
+	pathFile := filepath.Join(folder, filename)
+	c.File(pathFile)
 }

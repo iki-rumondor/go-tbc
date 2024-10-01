@@ -11,6 +11,7 @@ type Handlers struct {
 	AuthHandler       *handlers.AuthHandler
 	ManagementHandler *handlers.ManagementHandler
 	FetchHandler      *handlers.FetchHandler
+	ProcessingHandler *handlers.ProcessingHandler
 }
 
 func GetAppHandlers(db *gorm.DB) *Handlers {
@@ -27,9 +28,14 @@ func GetAppHandlers(db *gorm.DB) *Handlers {
 	fetch_service := services.NewFetchService(fetch_repo)
 	fetch_handler := handlers.NewFetchHandler(fetch_service)
 
+	processing_repo := repositories.NewProcessingInterface(db)
+	processing_service := services.NewProcessingService(processing_repo)
+	processing_handler := handlers.NewProcessingHandler(processing_service)
+
 	return &Handlers{
 		AuthHandler:       auth_handler,
 		ManagementHandler: management_handler,
 		FetchHandler:      fetch_handler,
+		ProcessingHandler: processing_handler,
 	}
 }

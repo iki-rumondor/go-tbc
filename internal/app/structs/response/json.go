@@ -8,8 +8,9 @@ type User struct {
 }
 
 type HealthCenter struct {
-	Uuid      string  `json:"uuid" `
-	Name      string  `json:"name" `
+	Uuid      string  `json:"uuid"`
+	Name      string  `json:"name"`
+	ImageName string  `json:"image_name"`
 	Longitude float64 `json:"longitude"`
 	Latitude  float64 `json:"latitude"`
 	CreatedAt int64   `json:"created_at"`
@@ -27,4 +28,14 @@ type Case struct {
 	CreatedAt    int64         `json:"created_at"`
 	UpdatedAt    int64         `json:"updated_at"`
 	HealthCenter *HealthCenter `json:"health_center"`
+}
+
+type Result struct {
+	Uuid      string `json:"uuid" `
+	Type      string `json:"type"`
+	Cluster   byte   `json:"cluster"`
+	Total     int64  `json:"total"`
+	CreatedAt int64  `json:"created_at"`
+	UpdatedAt int64  `json:"updated_at"`
+	Case      *Case  `json:"case"`
 }

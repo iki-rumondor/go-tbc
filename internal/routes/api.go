@@ -22,12 +22,13 @@ func StartServer(handlers *config.Handlers) *gin.Engine {
 	public := router.Group("api")
 	{
 		public.POST("/verify-user", handlers.AuthHandler.VerifyUser)
+		public.GET("/health-centers", handlers.FetchHandler.GetHealthCenters)
+		public.GET("/files/health-centers/:filename", handlers.FetchHandler.GetHealthCenterImage)
 	}
 
 	admin := router.Group("api").Use(IsValidJWT()).Use(IsRole("ADMIN")).Use(SetUserUuid())
 	{
 		admin.GET("/users/detail", handlers.FetchHandler.GetUserByUuid)
-		admin.GET("/health-centers", handlers.FetchHandler.GetHealthCenters)
 		admin.GET("/health-centers/:uuid", handlers.FetchHandler.GetHealthCenterByUuid)
 		admin.POST("/health-centers", handlers.ManagementHandler.CreateHealthCenter)
 		admin.PUT("/health-centers/:uuid", handlers.ManagementHandler.UpdateHealthCenter)
@@ -37,6 +38,10 @@ func StartServer(handlers *config.Handlers) *gin.Engine {
 		admin.DELETE("/cases/:uuid", handlers.ManagementHandler.DeleteCase)
 		admin.GET("/cases", handlers.FetchHandler.GetCases)
 		admin.GET("/cases/:uuid", handlers.FetchHandler.GetCaseByUuid)
+
+		admin.GET("/years/cases", handlers.FetchHandler.GetCaseYears)
+		admin.POST("/clustering", handlers.ProcessingHandler.KmeansClustering)
+		admin.GET("/results/years/:year", handlers.FetchHandler.GetResultByYear)
 	}
 
 	return router

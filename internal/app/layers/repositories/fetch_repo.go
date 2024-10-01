@@ -55,3 +55,19 @@ func (r *FetchRepo) GetCaseByUuid(uuid string) (*models.Case, error) {
 	}
 	return &data, nil
 }
+
+func (r *FetchRepo) GetCaseYears() (*[]uint, error) {
+	var years []uint
+	if err := r.db.Model(&models.Case{}).Select("DISTINCT year").Pluck("year", &years).Error; err != nil {
+		return nil, err
+	}
+	return &years, nil
+}
+
+func (r *FetchRepo) GetResultByYear(year string) (*[]models.Result, error) {
+	var data []models.Result
+	if err := r.db.Preload("Case.HealthCenter").Joins("Case").Find(&data, "Case.year = ?", year).Error; err != nil {
+		return nil, err
+	}
+	return &data, nil
+}

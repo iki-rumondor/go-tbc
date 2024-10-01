@@ -41,6 +41,7 @@ func (s *FetchService) GetHealthCenters() (*[]response.HealthCenter, error) {
 		resp = append(resp, response.HealthCenter{
 			Uuid:      item.Uuid,
 			Name:      item.Name,
+			ImageName: item.ImageName,
 			Longitude: item.Longitude,
 			Latitude:  item.Latitude,
 			CreatedAt: item.CreatedAt,
@@ -116,6 +117,54 @@ func (s *FetchService) GetCaseByUuid(uuid string) (*response.Case, error) {
 			Uuid: item.HealthCenter.Uuid,
 			Name: item.HealthCenter.Name,
 		},
+	}
+
+	return &resp, nil
+}
+
+func (s *FetchService) GetCaseYears() (*[]uint, error) {
+	resp, err := s.Repo.GetCaseYears()
+	if err != nil {
+		return nil, response.SERVICE_INTERR
+	}
+
+	return resp, nil
+}
+
+func (s *FetchService) GetResultByYear(year string) (*map[string][]response.Result, error) {
+	data, err := s.Repo.GetResultByYear(year)
+	if err != nil {
+		return nil, response.SERVICE_INTERR
+	}
+
+	var resp = make(map[string][]response.Result)
+
+	for _, item := range *data {
+		var total = item.Case.AdultCount + item.Case.ChildCount
+		switch item.Type {
+		case "adult":
+			total = item.Case.AdultCount
+		case "child":
+			total = item.Case.ChildCount
+		case "male":
+			total = item.Case.MaleCount
+		case "female":
+			total = item.Case.FemaleCount
+		}
+
+		resp[item.Type] = append(resp[item.Type], response.Result{
+			Uuid:      item.Uuid,
+			Cluster:   item.Cluster,
+			Total:     total,
+			CreatedAt: item.CreatedAt,
+			UpdatedAt: item.UpdatedAt,
+			Case: &response.Case{
+				Year: item.Case.Year,
+				HealthCenter: &response.HealthCenter{
+					Name: item.Case.HealthCenter.Name,
+				},
+			},
+		})
 	}
 
 	return &resp, nil

@@ -2,6 +2,10 @@ package services
 
 import (
 	"fmt"
+	"log"
+	"os"
+	"path/filepath"
+	"regexp"
 
 	"github.com/iki-rumondor/go-tbc/internal/app/layers/interfaces"
 	"github.com/iki-rumondor/go-tbc/internal/app/structs/models"
@@ -19,11 +23,12 @@ func NewManagementService(repo interfaces.ManagementInterface) *ManagementServic
 	}
 }
 
-func (s *ManagementService) CreateHealthCenter(req *request.HealthCenter) error {
+func (s *ManagementService) CreateHealthCenter(imageName string, req *request.HealthCenter) error {
 	model := models.HealthCenter{
 		Name:      req.Name,
 		Longitude: req.Longitude,
 		Latitude:  req.Latitude,
+		ImageName: imageName,
 	}
 
 	if err := s.Repo.CreateModel(&model); err != nil {
@@ -33,15 +38,31 @@ func (s *ManagementService) CreateHealthCenter(req *request.HealthCenter) error 
 	return nil
 }
 
-func (s *ManagementService) UpdateHealthCenter(uuid string, req *request.HealthCenter) error {
+func (s *ManagementService) UpdateHealthCenter(uuid, filename string, req *request.HealthCenter) error {
+	healthCenter, err := s.Repo.GetHealthCenterByUuid(uuid)
+	if err != nil {
+		log.Println(err.Error())
+		return response.SERVICE_INTERR
+	}
+
 	model := models.HealthCenter{
 		Name:      req.Name,
 		Longitude: req.Longitude,
 		Latitude:  req.Latitude,
+		ImageName: filename,
 	}
 
 	if err := s.Repo.UpdateHealthCenter(uuid, &model); err != nil {
+		log.Println(err.Error())
 		return response.SERVICE_INTERR
+	}
+
+	if filename != "" {
+		puskesmasFolder := "internal/files/puskesmas"
+		pathFile := filepath.Join(puskesmasFolder, healthCenter.ImageName)
+		if err := os.Remove(pathFile); err != nil {
+			log.Println(err.Error())
+		}
 	}
 
 	return nil
@@ -78,6 +99,11 @@ func (s *ManagementService) CreateCase(req *request.Case) error {
 	if unique := s.Repo.CheckCaseUnique(healthCenter.ID, req.Year, ""); !unique {
 		message := fmt.Sprintf("Kasus untuk puskesmas %s pada tahun %s sudah ada", healthCenter.Name, req.Year)
 		return response.BADREQ_ERR(message)
+	}
+
+	match, _ := regexp.MatchString(`^\d{4}$`, req.Year)
+	if !match {
+		return response.BADREQ_ERR("Tahun tidak valid")
 	}
 
 	model := models.Case{
@@ -127,6 +153,11 @@ func (s *ManagementService) UpdateCase(uuid string, req *request.Case) error {
 	if unique := s.Repo.CheckCaseUnique(healthCenter.ID, req.Year, uuid); !unique {
 		message := fmt.Sprintf("Kasus untuk puskesmas %s pada tahun %s sudah ada", healthCenter.Name, req.Year)
 		return response.BADREQ_ERR(message)
+	}
+
+	match, _ := regexp.MatchString(`^\d{4}$`, req.Year)
+	if !match {
+		return response.BADREQ_ERR("Tahun tidak valid")
 	}
 
 	model := models.Case{
