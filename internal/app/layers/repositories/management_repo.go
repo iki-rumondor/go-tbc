@@ -60,5 +60,14 @@ func (r *ManagementRepo) DeleteCase(uuid string) error {
 		return err
 	}
 
-	return r.db.Delete(&data).Error
+	return r.db.Transaction(func(tx *gorm.DB) error {
+		if err := r.db.Where("1=1").Delete(&models.Result{}).Error; err != nil {
+			return err
+		}
+		if err := r.db.Delete(&data).Error; err != nil {
+			return err
+		}
+		return nil
+	})
+
 }
