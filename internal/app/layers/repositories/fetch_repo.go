@@ -40,10 +40,22 @@ func (r *FetchRepo) GetHealthCenterByUuid(uuid string) (*models.HealthCenter, er
 	return &data, nil
 }
 
-func (r *FetchRepo) GetCases() (*[]models.Case, error) {
+func (r *FetchRepo) GetCases(health_center_uuid string) (*[]models.Case, error) {
 	var data []models.Case
-	if err := r.db.Preload("HealthCenter").Find(&data).Error; err != nil {
-		return nil, err
+	if health_center_uuid == "" {
+		if err := r.db.Preload("HealthCenter").Find(&data).Error; err != nil {
+			return nil, err
+		}
+	} else {
+		var healthCenter models.HealthCenter
+		if err := r.db.First(&healthCenter, "uuid = ?", health_center_uuid).Error; err != nil {
+			return nil, err
+		}
+
+		if err := r.db.Preload("HealthCenter").Find(&data, "health_center_id = ?", healthCenter.ID).Error; err != nil {
+			return nil, err
+		}
+
 	}
 	return &data, nil
 }

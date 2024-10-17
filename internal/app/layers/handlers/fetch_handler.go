@@ -55,8 +55,8 @@ func (h *FetchHandler) GetHealthCenterByUuid(c *gin.Context) {
 }
 
 func (h *FetchHandler) GetCases(c *gin.Context) {
-
-	resp, err := h.Service.GetCases()
+	health_center := c.Query("health_center")
+	resp, err := h.Service.GetCases(health_center)
 	if err != nil {
 		utils.HandleError(c, err)
 		return

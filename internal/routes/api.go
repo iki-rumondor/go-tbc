@@ -29,11 +29,16 @@ func StartServer(handlers *config.Handlers) *gin.Engine {
 		public.GET("/results/:uuid", handlers.FetchHandler.GetResultByUuid)
 	}
 
+	user := router.Group("api").Use(IsValidJWT()).Use(SetUserUuid())
+	{
+		user.GET("/dashboards/admin", handlers.FetchHandler.GetDashboardInformation)
+		user.GET("/users/detail", handlers.FetchHandler.GetUserByUuid)
+		user.GET("/cases", handlers.FetchHandler.GetCases)
+	}
+	
 	admin := router.Group("api").Use(IsValidJWT()).Use(IsRole("ADMIN")).Use(SetUserUuid())
 	{
-		admin.GET("/dashboards/admin", handlers.FetchHandler.GetDashboardInformation)
-
-		admin.GET("/users/detail", handlers.FetchHandler.GetUserByUuid)
+		
 		admin.GET("/health-centers/:uuid", handlers.FetchHandler.GetHealthCenterByUuid)
 		admin.POST("/health-centers", handlers.ManagementHandler.CreateHealthCenter)
 		admin.PUT("/health-centers/:uuid", handlers.ManagementHandler.UpdateHealthCenter)
@@ -41,7 +46,6 @@ func StartServer(handlers *config.Handlers) *gin.Engine {
 		admin.POST("/cases", handlers.ManagementHandler.CreateCase)
 		admin.PUT("/cases/:uuid", handlers.ManagementHandler.UpdateCase)
 		admin.DELETE("/cases/:uuid", handlers.ManagementHandler.DeleteCase)
-		admin.GET("/cases", handlers.FetchHandler.GetCases)
 		admin.GET("/cases/:uuid", handlers.FetchHandler.GetCaseByUuid)
 
 		admin.POST("/clustering", handlers.ProcessingHandler.KmeansClustering)

@@ -70,8 +70,8 @@ func (s *FetchService) GetHealthCenterByUuid(uuid string) (*response.HealthCente
 	return &resp, nil
 }
 
-func (s *FetchService) GetCases() (*[]response.Case, error) {
-	data, err := s.Repo.GetCases()
+func (s *FetchService) GetCases(health_center string) (*[]response.Case, error) {
+	data, err := s.Repo.GetCases(health_center)
 	if err != nil {
 		return nil, response.SERVICE_INTERR
 	}

@@ -44,6 +44,7 @@ func freshDatabase(db *gorm.DB) error {
 	}
 
 	db.Create(&config.ADMIN_USER)
+	db.Create(&config.KADIS_USER)
 
 	return nil
 }
