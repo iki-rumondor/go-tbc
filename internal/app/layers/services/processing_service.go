@@ -39,7 +39,7 @@ func indexOf(arr []int, val int) int {
 
 func kMeansClustering(data []int64) []int {
 	k := 3
-	maxIter := 20
+	maxIter := 100
 
 	centroids := initCentroid(k, data)
 	prevCentroids := make([]float64, k)
