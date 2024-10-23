@@ -8,6 +8,7 @@ type ManagementInterface interface {
 
 	CreateModel(pointerModel interface{}) error
 	UpdateHealthCenter(uuid string, model *models.HealthCenter) error
+	DeleteHealthCenter(uuid string) error
 
 	UpdateCase(uuid string, model *models.Case) error
 	DeleteCase(uuid string) error

@@ -173,3 +173,13 @@ func (h *ManagementHandler) DeleteCase(c *gin.Context) {
 
 	c.JSON(http.StatusOK, response.SUCCESS_RES("Kasus Berhasil Dihapus"))
 }
+
+func (h *ManagementHandler) DeleteHealthCenter(c *gin.Context) {
+	uuid := c.Param("uuid")
+	if err := h.Service.DeleteHealthCenter(uuid); err != nil {
+		utils.HandleError(c, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, response.SUCCESS_RES("Puskesmas Berhasil Dihapus"))
+}

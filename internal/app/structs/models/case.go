@@ -16,6 +16,7 @@ type Case struct {
 	CreatedAt      int64  `gorm:"autoCreateTime:milli"`
 	UpdatedAt      int64  `gorm:"autoCreateTime:milli;autoUpdateTime:milli"`
 	HealthCenterID uint   `gorm:"not_null;"`
+	Results        *[]Result
 	HealthCenter   *HealthCenter
 }
 

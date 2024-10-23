@@ -183,3 +183,11 @@ func (s *ManagementService) DeleteCase(uuid string) error {
 
 	return nil
 }
+
+func (s *ManagementService) DeleteHealthCenter(uuid string) error {
+	if err := s.Repo.DeleteHealthCenter(uuid); err != nil {
+		return response.SERVICE_INTERR
+	}
+
+	return nil
+}

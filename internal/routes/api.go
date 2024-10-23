@@ -35,13 +35,14 @@ func StartServer(handlers *config.Handlers) *gin.Engine {
 		user.GET("/users/detail", handlers.FetchHandler.GetUserByUuid)
 		user.GET("/cases", handlers.FetchHandler.GetCases)
 	}
-	
+
 	admin := router.Group("api").Use(IsValidJWT()).Use(IsRole("ADMIN")).Use(SetUserUuid())
 	{
-		
+
 		admin.GET("/health-centers/:uuid", handlers.FetchHandler.GetHealthCenterByUuid)
 		admin.POST("/health-centers", handlers.ManagementHandler.CreateHealthCenter)
 		admin.PUT("/health-centers/:uuid", handlers.ManagementHandler.UpdateHealthCenter)
+		admin.DELETE("/health-centers/:uuid", handlers.ManagementHandler.DeleteHealthCenter)
 
 		admin.POST("/cases", handlers.ManagementHandler.CreateCase)
 		admin.PUT("/cases/:uuid", handlers.ManagementHandler.UpdateCase)
